@@ -1,0 +1,6 @@
+g++ -g  `root-config --cflags` -o test main.cpp class_histogram.cpp `root-config --libs` -lMinuit -lSpectrum
+
+
+
+
+

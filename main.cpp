@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
   Int_t j1(0), j2(0); /// \brief count the number of rootfiles
   ifstream HistoInputs;
   vector<string> peakref;
-  vector<vector<Int_t> > valeur_integrale;
-  vector<vector<Int_t> > valeur_integrale_cold;
+  vector<vector<Double_t> > valeur_integrale;
+  vector<vector<Double_t> > valeur_integrale_cold;
   Double_t time1(0), time2(0);
   Double_t temp(0), Errtemp(0);
   Histogram warm("./ForRemy/RunForAnalysis/Warm_night_2015-04-21--62067");
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 		      if(j1==0 && detector==0)
 			{
 			  peakref.push_back(ref);
-			  valeur_integrale.push_back(vector<Int_t>(4,0));
+			  valeur_integrale.push_back(vector<Double_t>(4,0));
 			}
 		      Int_t Integrale = histo.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
 		      Int_t k=i-detector*23;
@@ -101,7 +101,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 		      iss >> detector >> bin_g >> bin_d >> min_bg >> max_bg >> ref; 
 		      if(j2==0 && detector==0)
 			{
-			  valeur_integrale_cold.push_back(vector<Int_t>(4,0));
+			  valeur_integrale_cold.push_back(vector<Double_t>(4,0));
 			}
 		      Int_t Integrale = histo.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
 		      Int_t k=i-detector*23;

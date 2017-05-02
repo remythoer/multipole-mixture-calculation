@@ -117,7 +117,7 @@ vector<vector<Double_t> > Histogram::Calibrate() const
       TSpectrum *s1 = new TSpectrum(20);
       Int_t nfound = s1->Search(histo[i],2,"",0.10);   
       Float_t *xpeaks1 = s1->GetPositionX();
-      for(Int_t j=0;j<3;j++)
+      for(Int_t j=0;j<4;j++)
       	{
       	  if(550 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 650) peak[0]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);
 	  if(950 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 1050) peak[1]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);
@@ -153,7 +153,7 @@ vector<vector<Double_t> > Histogram::CalibInv() const
       TSpectrum *s1 = new TSpectrum(20);
       Int_t nfound = s1->Search(histo[i],2,"",0.10);   
       Float_t *xpeaks1 = s1->GetPositionX();
-      for(Int_t j=0;j<3;j++)
+      for(Int_t j=0;j<4;j++)
       	{
       	  if(550 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 650) peak[0]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);
 	  if(950 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 1050) peak[1]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);

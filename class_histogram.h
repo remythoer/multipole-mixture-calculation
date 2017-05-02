@@ -54,6 +54,10 @@ class Histogram
   /// \return runtime
   Double_t Get_time() const;
 
+  /// \brief Get the dead time for each detector
+  /// \return a vector containing the dead times of each detectors
+  vector<Double_t> Get_deadtime() const;
+
   /// \brief Get histograms
   /// \return An array with the four histograms
   vector<TH1D*> Get_histo() const;

@@ -31,6 +31,33 @@ Histogram::~Histogram()
   delete file;
 }
 
+vector<Double_t> Histogram::Get_deadtime() const
+{
+  TString S_deadtime;
+  Double_t D_deadtime;
+  vector<Double_t> V_deadtime;
+  ifstream mpafile;
+  mpafile.open(filename+".mpa");
+  for (int j=0; j<54; j++) {mpafile>>S_deadtime;}
+  S_deadtime=S_deadtime.Remove(0,9);
+  D_deadtime=atof(S_deadtime);
+  V_deadtime.push_back(time-D_deadtime); /// \brief deadtime for detector 0
+  for(int j=0; j<32; j++){mpafile>>S_deadtime;}
+  S_deadtime=S_deadtime.Remove(0,9);
+  D_deadtime=atof(S_deadtime);
+  V_deadtime.push_back(time-D_deadtime); /// \brief deadtime for detector 1
+  for(int j=0; j<32; j++){mpafile>>S_deadtime;}
+  S_deadtime=S_deadtime.Remove(0,9);
+  D_deadtime=atof(S_deadtime);
+  V_deadtime.push_back(time-D_deadtime); /// \brief deadtime for detector 2
+  for(int j=0; j<32; j++){mpafile>>S_deadtime;}
+  S_deadtime=S_deadtime.Remove(0,9);
+  D_deadtime=atof(S_deadtime);
+  V_deadtime.push_back(time-D_deadtime); /// \brief deadtime for detector 3
+  mpafile.close();
+  return V_deadtime;
+}
+
 vector<TH1D*> Histogram::Get_histo() const
 {
   vector<TH1D*> histograms;

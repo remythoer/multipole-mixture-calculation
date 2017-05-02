@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 		      Int_t Integrale = histo.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
 		      Int_t k=i-detector*23;
 		      valeur_integrale[k][detector]=valeur_integrale[k][detector]+Integrale;
-		      time1=time1+histo.Get_time();
+		      
 		      
 		      i++;
 		    }
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	      HistoInputs.close();
 	      time1=time1+histo.Get_time();
 	      	      
-	      cout<<name<<" "<<j1<<endl;
+	      cout<<name<<" "<<j1<<" Time="<<histo.Get_time()<<endl;
 	      j1++;
 	    }
 	}
@@ -115,14 +115,14 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 	      time2=time2+histo.Get_time();
 	      histo.temp1(warm, 1, temp, Errtemp);
 	      
-	      cout<<name<<" "<<j2<<" T="<<temp<<"+/-"<<Errtemp<<endl;
+	      cout<<name<<" "<<j2<<" T="<<temp<<"+/-"<<Errtemp<<" Time="<<histo.Get_time()<<endl;
 	      j2++;
 	    }
 	}
     }
   closedir(dir);
   cout<<"out"<<endl;
-  
+  cout<<"time1="<<time1<<" time2="<<time2<<endl;
   ofstream filewarm;
   filewarm.open("file_warm.dat");
   for(Int_t i=0; i<peakref.size(); i++)

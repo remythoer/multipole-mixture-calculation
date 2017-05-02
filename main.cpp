@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	      
 	      Int_t i(0); /// \brief count the number of peaks
 	      string ligne;
-	      HistoInputs.open("./ForRemy/HistoForAnalysis.txt");
+	      HistoInputs.open("./HistoForAnalysis.txt");
 	      if(HistoInputs)
 		{ 
 		  while(getline(HistoInputs, ligne))
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 			  valeur_integrale.push_back(vector<Double_t>(4,0));
 			}
 		      Int_t Integrale = histo.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
-		      Int_t k=i-detector*23;
+		      Int_t k=i-detector*25;
 		      valeur_integrale[k][detector]=valeur_integrale[k][detector]+Integrale;
 		      
 		      
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 	      time1=time1+histo.Get_time();
 	      	      
 	      cout<<name<<" "<<j1<<" Time="<<histo.Get_time()<<endl;
-	      cout<<"calibration detector 0 a="<<histo.CalibInv()[0][0]<<" b="<<histo.CalibInv()[0][1]<<" c="<<histo.CalibInv()[0][2]<<endl;
+	      cout<<"calibration detector 3 a="<<histo.Calibrate()[3][0]<<" b="<<histo.Calibrate()[3][1]<<" c="<<histo.Calibrate()[3][2]<<endl;
 	      j1++;
 	    }
 	}
@@ -91,7 +91,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 	      
 	      Int_t i(0); /// \brief count the number of peaks
 	      string ligne;
-	      HistoInputs.open("./ForRemy/HistoForAnalysis.txt");
+	      HistoInputs.open("./HistoForAnalysis.txt");
 	      if(HistoInputs)
 		{
 		  while(getline(HistoInputs, ligne))
@@ -105,7 +105,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 			  valeur_integrale_cold.push_back(vector<Double_t>(4,0));
 			}
 		      Int_t Integrale = histo.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
-		      Int_t k=i-detector*23;
+		      Int_t k=i-detector*25;
 		      valeur_integrale_cold[k][detector]=valeur_integrale_cold[k][detector]+Integrale;
 		      
 		      i++;
@@ -117,7 +117,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 	      histo.temp1(warm, 1, temp, Errtemp);
 	      
 	      cout<<name<<" "<<j2<<" T="<<temp<<"+/-"<<Errtemp<<" Time="<<histo.Get_time()<<endl;
-	      cout<<"calibration detector 0 a="<<histo.CalibInv()[0][0]<<" b="<<histo.CalibInv()[0][1]<<" c="<<histo.CalibInv()[0][2]<<endl;
+	      cout<<"calibInv detector 3 a="<<histo.CalibInv()[3][0]<<" b="<<histo.CalibInv()[3][1]<<" c="<<histo.CalibInv()[3][2]<<endl;
 	      j2++;
 	    }
 	}

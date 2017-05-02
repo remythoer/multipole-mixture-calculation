@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) 
 {
-  TApplication app("appplication",NULL,NULL); 
+  //TApplication app("appplication",NULL,NULL); 
   Int_t j1(0), j2(0); /// \brief count the number of rootfiles
   ifstream HistoInputs;
   vector<string> peakref;
@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
 	      time1=time1+histo.Get_time();
 	      	      
 	      cout<<name<<" "<<j1<<" Time="<<histo.Get_time()<<endl;
+	      cout<<"calibration detector 0 a="<<histo.CalibInv()[0][0]<<" b="<<histo.CalibInv()[0][1]<<" c="<<histo.CalibInv()[0][2]<<endl;
 	      j1++;
 	    }
 	}
@@ -116,6 +117,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 	      histo.temp1(warm, 1, temp, Errtemp);
 	      
 	      cout<<name<<" "<<j2<<" T="<<temp<<"+/-"<<Errtemp<<" Time="<<histo.Get_time()<<endl;
+	      cout<<"calibration detector 0 a="<<histo.CalibInv()[0][0]<<" b="<<histo.CalibInv()[0][1]<<" c="<<histo.CalibInv()[0][2]<<endl;
 	      j2++;
 	    }
 	}
@@ -148,7 +150,8 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
       filecold<<peakref[i]<<" "<<valeur_integrale_cold[i][0]<<" "<<valeur_integrale_cold[i][1]<<" "<<valeur_integrale_cold[i][2]<<" "<<valeur_integrale_cold[i][3]<<endl;
     }
   filecold.close();
-
+  
+  cout<<"done"<<endl;
   //app.Run();
   return 0;
 }

@@ -140,6 +140,42 @@ vector<vector<Double_t> > Histogram::Calibrate() const
   return cal;
 }
 
+vector<vector<Double_t> > Histogram::CalibInv() const
+{
+  vector<vector<Double_t> > cal;
+  Int_t peak[3];
+  Int_t energy[3];
+  energy[0]=511;
+  energy[1]=847;
+  energy[2]=1238;
+  for(Int_t i=0;i<4;i++)
+    {
+      TSpectrum *s1 = new TSpectrum(20);
+      Int_t nfound = s1->Search(histo[i],2,"",0.10);   
+      Float_t *xpeaks1 = s1->GetPositionX();
+      for(Int_t j=0;j<3;j++)
+      	{
+      	  if(550 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 650) peak[0]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);
+	  if(950 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 1050) peak[1]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);
+      	  if(1400 < histo[i]->GetXaxis()->FindBin(xpeaks1[j]) && histo[i]->GetXaxis()->FindBin(xpeaks1[j]) < 1600) peak[2]=histo[i]->GetXaxis()->FindBin(xpeaks1[j]);
+      	}
+      delete s1;
+      vector<Double_t> param;
+      TGraph *calib = new TGraph(3,energy,peak);
+      TF1 *f1=new TF1("f","[0]*x*x+[1]*x+[2]");
+      calib->Fit(f1,"QN");
+      Double_t par[3];
+      f1->GetParameters(&par[0]);
+      delete calib;
+      delete f1;
+      param.push_back(par[0]);
+      param.push_back(par[1]);
+      param.push_back(par[2]);
+      cal.push_back(param);
+    }
+  return cal;
+}
+
 void Histogram::temp1(const Histogram &warm, Int_t nbfileWarm, Double_t &temp, Double_t &Errtemp) const
 {
   Double_t WW=(((double)this->Integrate(0,1400,17,1390,1427)+(double)this->Integrate(2,1341,13,1331,1364))/((double)this->Integrate(1,1381,10,1371,1401)+(double)this->Integrate(3,1393,10,1383,1413)))*(((double)warm.Integrate(1,1381,10,1371,1401)+(double)warm.Integrate(3,1393,10,1383,1413))/((double)warm.Integrate(0,1400,17,1390,1427)+(double)warm.Integrate(2,1341,13,1331,1364)));

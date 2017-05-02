@@ -91,9 +91,13 @@ class Histogram
   /// \param &temp &Errtemp : the temperature and error calculated
   void temp2(const Histogram & warm, Int_t nbfileWarm, Double_t &temp, Double_t &ErrTemp) const;
   
-  /// \brief Make the calibration of the detector
+  /// \brief Make the calibration of the detector bin to keV
   /// \return a vector with the parameter of the calibration for the four detector
   vector<vector<Double_t> > Calibrate() const;
+
+  /// \brief Make the inverse calibration of the detector keV to bin
+  /// \return a vector with the parameter of the inverse calibration for the four detector
+    vector<vector<Double_t> > CalibInv() const;
 };
 
 #endif

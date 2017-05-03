@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 		}
 	      else {cout<<"Error file "<<name<<" not open"<<endl;}
 	      HistoInputs.close();
-	      for(Int_t j=0; j<3; j++){time1[j]=time1[j]+histo.Get_time()-histo.Get_deadtime()[j];}	      	      
+	      for(Int_t j=0; j<4; j++){time1[j]=time1[j]+histo.Get_time()-histo.Get_deadtime()[j];}	      	      
 	      cout<<name<<" "<<j1<<" Time="<<histo.Get_time()<<endl;
 	      cout<<"calibration detector 3 a="<<histo.Calibrate()[3][0]<<" b="<<histo.Calibrate()[3][1]<<" c="<<histo.Calibrate()[3][2]<<endl;
 	      j1++;
@@ -113,7 +113,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 		}
 	      else {cout<<"Error file "<<name<<" not open"<<endl;}
 	      HistoInputs.close();
-	      for(Int_t j=0; j<3; j++){time2[j]=time2[j]+histo.Get_time()-histo.Get_deadtime()[j];}
+	      for(Int_t j=0; j<4; j++){time2[j]=time2[j]+histo.Get_time()-histo.Get_deadtime()[j];}
 	      histo.temp1(warm, 1, temp, Errtemp);
 	      
 	      cout<<name<<" "<<j2<<" T="<<temp<<"+/-"<<Errtemp<<" Time="<<histo.Get_time()<<endl;
@@ -128,7 +128,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
   filewarm.open("file_warm.dat");
   for(Int_t i=0; i<peakref.size(); i++)
     {
-      for(Int_t j=0; j<3; j++){valeur_integrale[i][j]=valeur_integrale[i][j]/time1[j];}      
+      for(Int_t j=0; j<4; j++){valeur_integrale[i][j]=valeur_integrale[i][j]/time1[j];}      
       filewarm<<peakref[i]<<" "<<valeur_integrale[i][0]<<" "<<valeur_integrale[i][1]<<" "<<valeur_integrale[i][2]<<" "<<valeur_integrale[i][3]<<endl;
     }
   filewarm.close();
@@ -137,7 +137,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
   filecold.open("file_cold.dat");
   for(Int_t i=0; i<peakref.size(); i++)
     {
-      for(Int_t j=0; j<3; j++){valeur_integrale_cold[i][j]=valeur_integrale_cold[i][j]/time2[j];}
+      for(Int_t j=0; j<4; j++){valeur_integrale_cold[i][j]=valeur_integrale_cold[i][j]/time2[j];}
       filecold<<peakref[i]<<" "<<valeur_integrale_cold[i][0]<<" "<<valeur_integrale_cold[i][1]<<" "<<valeur_integrale_cold[i][2]<<" "<<valeur_integrale_cold[i][3]<<endl;
     }
   filecold.close();

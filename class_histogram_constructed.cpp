@@ -23,6 +23,17 @@ Histogram_constructed::~Histogram_constructed()
   delete file;
 }
 
+void Histogram_constructed::operator+=(const Histogram_constructed & hist)
+{
+  for(Int_t i=0; i<4; i++)
+    {
+      for(Int_t bin=0; bin<4096; bin++)
+	{
+	  histo[i]->SetBinContent(bin,(Double_t)hist.Get_bin(bin)[i]);
+	}    
+    }
+}
+  
 vector<TH1D*> Histogram_constructed::Get_histo() const
 {
   vector<TH1D*> histograms;

@@ -53,6 +53,12 @@ class Histogram_constructed
   /// \return An array with the four histograms
   vector<TH1D*> Get_histo() const;
 
+  /// \brief operator += for Histo
+  /// \brief use to make the sum of the histo
+  /// \brief add the bincontent to the object
+  /// \param hist: the Histo to add
+  void operator+=(const Histogram_constructed & hist);
+
   /// \brief Get content of bin
   /// \param bin 
   /// \return a vector containing the content of bin for the four detectors

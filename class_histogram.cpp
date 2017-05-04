@@ -91,15 +91,37 @@ Int_t Histogram::Background(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g
 {
   Int_t background;
   Int_t bin_max=bin+nb_bin;
-  Float_t ya = histo[detector]->GetBinContent(bin_g);
-  Float_t yb = histo[detector]->GetBinContent(bin_d);
-  Float_t xa = histo[detector]->GetBinCenter(bin_g);   
-  Float_t xb = histo[detector]->GetBinCenter(bin_d);
-  Float_t a = (yb-ya)/(xb-xa);
-  Float_t b = yb-a*xb;
+  
+  Float_t x[bin-bin_g+bin_d-bin_max];
+  Float_t y[bin-bin_g+bin_d-bin_max];
+  Float_t err_y[bin-bin_g+bin_d-bin_max];
+ 
+  Int_t i(0), j(0);
+  for(i; i<bin-bin_g; i++)
+    {
+      x[i]=histo[detector]->GetBinCenter(bin_g+i);
+      y[i]=histo[detector]->GetBinContent(bin_g+i);
+    }
+  i++;
+  for(j; j<bin_d-bin_max; j++)
+    {
+      x[i+j]=histo[detector]->GetBinCenter(bin_max+j+1);
+      y[i+j]=histo[detector]->GetBinContent(bin_max+j+1);
+    }
+  j++;
+  for(Int_t k=0; k<i+j;k++){err_y[k]=sqrt(y[k]);}
+  
+  TGraphErrors *graph = new TGraphErrors(i+j,x,y,0,err_y);
+  TF1 *f1 = new TF1("f","[0]*x+[1]");
+  graph->Fit(f1,"QN");
+  Double_t par[2];
+  f1->GetParameters(&par[0]);
+  delete graph;
+  delete f1;
+  
   Float_t e_bin_a = histo[detector]->GetBinCenter(bin);  
   Float_t e_bin_b = histo[detector]->GetBinCenter(bin_max);  
-  background=a/2.*(e_bin_b*e_bin_b-e_bin_a*e_bin_a)+b*(e_bin_b-e_bin_a);
+  background=par[0]/2.*(e_bin_b*e_bin_b-e_bin_a*e_bin_a)+par[1]*(e_bin_b-e_bin_a);
   return background;
 }
 

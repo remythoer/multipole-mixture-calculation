@@ -31,7 +31,7 @@ void Histogram_constructed::operator+=(const Histogram_constructed & hist)
 	{
 	  histo[i]->SetBinContent(bin,(Double_t)hist.Get_bin(bin)[i]+(Double_t)histo[i]->GetBinContent(bin));
 	}
-      histo[i]->Write("",TObject::kOverwrite);
+      file->WriteTObject(histo[i],"","Overwrite");
     }
 }
   

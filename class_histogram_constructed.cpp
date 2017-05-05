@@ -29,8 +29,9 @@ void Histogram_constructed::operator+=(const Histogram_constructed & hist)
     {
       for(Int_t bin=0; bin<4096; bin++)
 	{
-	  histo[i]->SetBinContent(bin,(Double_t)hist.Get_bin(bin)[i]);
-	}    
+	  histo[i]->SetBinContent(bin,(Double_t)hist.Get_bin(bin)[i]+(Double_t)histo[i]->GetBinContent(bin));
+	}
+      histo[i]->Write("",TObject::kOverwrite);
     }
 }
   

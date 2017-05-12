@@ -14,23 +14,22 @@ int main(int argc, char *argv[])
   ifstream HistoInputs;
   vector<string> peakref;
 
-  vector<vector<Double_t> > valeur_integrale_sum;
+  vector<vector<Double_t> > valeur_integrale_warm_sum;
   vector<vector<Double_t> > valeur_integrale_cold_sum;
 
   Double_t time1[4]={0};
   Double_t time2[4]={0};
   Double_t temp(0), Errtemp(0);
-  Histogram warm("./ForRemy/RunForAnalysis/Warm_night_2015-04-21--62067");
+  //Histogram warm("./ForRemy/RunForAnalysis/Warm_night_2015-04-21--62067");
   Histogram_constructed sum_warm ("./sum_warm");
   Histogram_constructed sum_cold ("./sum_cold");
 
-  
-  struct dirent* openfile = NULL;
+    struct dirent* openfile = NULL;
   DIR* dir = NULL;
 
   /// \brief Loop on the warm runs to make the sum
 
-  dir = opendir("./ForRemy/RunForAnalysis/Warm"); /// \brief open directory
+  dir = opendir("./Runs/Warm"); /// \brief open directory
   if(dir==NULL){cout<<"error, directory not open"<<endl;}
   else
     { /// \brief if directory is open
@@ -43,7 +42,7 @@ int main(int argc, char *argv[])
 	      for(it=name.begin();it!=name.end();it++){if(*it=='.') break;}
 	      it++;
 	      if(*it!='r')continue;
-	      name="./ForRemy/RunForAnalysis/"+name;
+	      name="./Runs/"+name;
 	      Histogram histo(name.erase(name.size()-5,5));
 
 	      sum_warm += histo;
@@ -59,7 +58,7 @@ int main(int argc, char *argv[])
 
 /// \brief Loop on the cold runs to make the sum
 
-dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
+dir = opendir("./Runs/Cold"); /// \brief open directory
   if(dir==NULL){cout<<"error, directory not open"<<endl;}
   else
     { /// \brief if directory is open
@@ -72,14 +71,14 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 	      for(it=name.begin();it!=name.end();it++){if(*it=='.') break;}
 	      it++;
 	      if(*it!='r')continue;
-	      name="./ForRemy/RunForAnalysis/"+name;
+	      name="./Runs/"+name;
 	      Histogram histo(name.erase(name.size()-5,5));
 
 	      sum_cold+=histo;
 	      
 	      for(Int_t j=0; j<4; j++){time2[j]=time2[j]+histo.Get_time()-histo.Get_deadtime()[j];}/// \brief deadtime of cold runs	      	      
-	      histo.temp1(warm, 1, temp, Errtemp);
-	      cout<<name<<" "<<j2<<" T="<<temp<<"+/-"<<Errtemp<<" Time="<<histo.Get_time()<<endl;
+	      //histo.temp1(warm, 1, temp, Errtemp);
+	      cout<<name<<" "<<j2<<" Time="<<histo.Get_time()<<endl;
 	      cout<<"calibInv detector 3 a="<<histo.CalibInv()[3][0]<<" b="<<histo.CalibInv()[3][1]<<" c="<<histo.CalibInv()[3][2]<<endl;
 	      j2++;
 	    }
@@ -93,7 +92,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
   
   /// \brief Loop on the peak and calculation of the integrale of each peak with the sum run
 
-  HistoInputs.open("./HistoForAnalysis.txt");
+  HistoInputs.open("./HistoForAnalysis2.txt");
   if(HistoInputs)
     {
        Int_t i(0);
@@ -104,17 +103,18 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 	  Int_t detector, bin_g, bin_d, min_bg, max_bg;
 	  string ref;
 	  iss >> detector >> bin_g >> bin_d >> min_bg >> max_bg >> ref; 
+	 
 	  if(detector==0)
 	    {
 	      peakref.push_back(ref);
 	      valeur_integrale_cold_sum.push_back(vector<Double_t>(4,0));
-	      valeur_integrale_sum.push_back(vector<Double_t>(4,0));
+	      valeur_integrale_warm_sum.push_back(vector<Double_t>(4,0));
 	    }
-	  Int_t Integrale_cold = sum_cold.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
-	  Int_t Integrale_warm = sum_warm.Integrate(detector,bin_g,bin_d-bin_g,bin_g-max_bg,bin_d+max_bg);
-	  Int_t k=i-detector*25;
-	  valeur_integrale_cold_sum[k][detector]=valeur_integrale_cold_sum[k][detector]+Integrale_cold;
-	  valeur_integrale_sum[k][detector]=valeur_integrale_sum[k][detector]+Integrale_warm;
+	  Int_t Integrale_cold = sum_cold.Integrate(detector,bin_g,bin_d-bin_g+1,bin_g-max_bg,bin_d+max_bg);
+	  Int_t Integrale_warm = sum_warm.Integrate(detector,bin_g,bin_d-bin_g+1,bin_g-max_bg,bin_d+max_bg);
+	  Int_t k=i-detector*5;
+	  valeur_integrale_cold_sum[k][detector]=Integrale_cold;
+	  valeur_integrale_warm_sum[k][detector]=Integrale_warm;
 	  i++;
 	}
     }
@@ -130,12 +130,12 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
     {
       for(Int_t j=0; j<4; j++)
 	{/// \brief time normalisation
-	  valeur_integrale_sum[i][j]=valeur_integrale_sum[i][j]/time1[j];
+	  valeur_integrale_warm_sum[i][j]=valeur_integrale_warm_sum[i][j]/time1[j];
 	  valeur_integrale_cold_sum[i][j]=valeur_integrale_cold_sum[i][j]/time2[j];
 	}      
-      filewarm<<peakref[i]<<" "<<valeur_integrale_sum[i][0]<<" "<<valeur_integrale_sum[i][1]<<" "<<valeur_integrale_sum[i][2]<<" "<<valeur_integrale_sum[i][3]<<endl;
+      filewarm<<peakref[i]<<" "<<valeur_integrale_warm_sum[i][0]<<" "<<valeur_integrale_warm_sum[i][1]<<" "<<valeur_integrale_warm_sum[i][2]<<" "<<valeur_integrale_warm_sum[i][3]<<endl;
       filecold<<peakref[i]<<" "<<valeur_integrale_cold_sum[i][0]<<" "<<valeur_integrale_cold_sum[i][1]<<" "<<valeur_integrale_cold_sum[i][2]<<" "<<valeur_integrale_cold_sum[i][3]<<endl;
-      filew<<peakref[i]<<" "<<valeur_integrale_cold_sum[i][0]/valeur_integrale_sum[i][0]<<" "<<valeur_integrale_cold_sum[i][1]/valeur_integrale_sum[i][1]<<" "<<valeur_integrale_cold_sum[i][2]/valeur_integrale_sum[i][2]<<" "<<valeur_integrale_cold_sum[i][3]/valeur_integrale_sum[i][3]<<endl;
+      filew<<peakref[i]<<" "<<valeur_integrale_cold_sum[i][0]/valeur_integrale_warm_sum[i][0]<<" "<<valeur_integrale_cold_sum[i][1]/valeur_integrale_warm_sum[i][1]<<" "<<valeur_integrale_cold_sum[i][2]/valeur_integrale_warm_sum[i][2]<<" "<<valeur_integrale_cold_sum[i][3]/valeur_integrale_warm_sum[i][3]<<endl;
     }
   filewarm.close();
   filecold.close();

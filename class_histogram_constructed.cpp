@@ -10,10 +10,10 @@ Histogram_constructed::Histogram_constructed() : filename(' '), file(NULL)
 Histogram_constructed::Histogram_constructed(TString name) : filename(name)
 {
   file = new TFile(name+".root", "RECREATE");
-  histo[0] = new TH1D("Detector_0"," ",4096,0.,4095.);
-  histo[1] = new TH1D("Detector_1"," ",4096,0.,4095.);
-  histo[2] = new TH1D("Detector_2"," ",4096,0.,4095.);
-  histo[3] = new TH1D("Detector_3"," ",4096,0.,4095.);
+  histo[0] = new TH1D("Detector_0"," ",4096,0.,4096.);
+  histo[1] = new TH1D("Detector_1"," ",4096,0.,4096.);
+  histo[2] = new TH1D("Detector_2"," ",4096,0.,4096.);
+  histo[3] = new TH1D("Detector_3"," ",4096,0.,4096.);
   for(Int_t i=0; i<4; i++){histo[i]->Write();}
 }
 
@@ -55,8 +55,8 @@ vector<Int_t> Histogram_constructed::Get_bin(Int_t bin) const
 Int_t Histogram_constructed::Integrate(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d) const
 {
   Int_t integral(0);
-  Int_t bin_max=bin+nb_bin;
-  for(Int_t j=bin;j<bin_max;j++)
+  Int_t bin_max=bin+nb_bin-1;
+  for(Int_t j=bin;j<=bin_max;j++)
     {
        integral=integral+histo[detector]->GetBinContent(j);
     }
@@ -67,38 +67,17 @@ Int_t Histogram_constructed::Integrate(Int_t detector, Int_t bin, Int_t nb_bin, 
 Int_t Histogram_constructed::Background(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d) const
 {
   Int_t background;
-  Int_t bin_max=bin+nb_bin;
-  
-  Float_t x[bin-bin_g+bin_d-bin_max];
-  Float_t y[bin-bin_g+bin_d-bin_max];
-  Float_t err_y[bin-bin_g+bin_d-bin_max];
- 
-  Int_t i(0), j(0);
-  for(i; i<bin-bin_g; i++)
+  Int_t edge(0);
+  Int_t bin_max=bin+nb_bin-1;
+  for(Int_t i=0; i<bin-bin_g; i++)
     {
-      x[i]=histo[detector]->GetBinCenter(bin_g+i);
-      y[i]=histo[detector]->GetBinContent(bin_g+i);
+      edge=edge+histo[detector]->GetBinContent(bin_g+i);
     }
-  i++;
-  for(j; j<bin_d-bin_max; j++)
+  for(Int_t j=0; j<bin_d-bin_max; j++)
     {
-      x[i+j]=histo[detector]->GetBinCenter(bin_max+j+1);
-      y[i+j]=histo[detector]->GetBinContent(bin_max+j+1);
+      edge=edge+histo[detector]->GetBinContent(bin_max+j+1);
     }
-  j++;
-  for(Int_t k=0; k<i+j;k++){err_y[k]=sqrt(y[k]);}
-  
-  TGraphErrors *graph = new TGraphErrors(i+j,x,y,0,err_y);
-  TF1 *f1 = new TF1("f","[0]*x+[1]");
-  graph->Fit(f1,"QN");
-  Double_t par[2];
-  f1->GetParameters(&par[0]);
-  delete graph;
-  delete f1;
-  
-  Float_t e_bin_a = histo[detector]->GetBinCenter(bin);  
-  Float_t e_bin_b = histo[detector]->GetBinCenter(bin_max);  
-  background=par[0]/2.*(e_bin_b*e_bin_b-e_bin_a*e_bin_a)+par[1]*(e_bin_b-e_bin_a);
+  background=edge*nb_bin/(bin_d-bin_g+1-nb_bin);
   return background;
 }
 

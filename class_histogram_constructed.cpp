@@ -52,7 +52,7 @@ vector<Int_t> Histogram_constructed::Get_bin(Int_t bin) const
   return content;  
 }
 
-Int_t Histogram_constructed::Integrate(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d) const
+Int_t Histogram_constructed::Integrate(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d, Double_t & Err) const
 {
   Int_t integral(0);
   Int_t bin_max=bin+nb_bin-1;
@@ -60,11 +60,14 @@ Int_t Histogram_constructed::Integrate(Int_t detector, Int_t bin, Int_t nb_bin, 
     {
        integral=integral+histo[detector]->GetBinContent(j);
     }
-  integral=integral-this->Background(detector,bin,nb_bin,bin_g,bin_d); /// \brief Background substraction 
+  Double_t ErrInt = sqrt(integral);
+  Double_t ErrBg;
+  integral=integral-this->Background(detector,bin,nb_bin,bin_g,bin_d, ErrBg); /// \brief Background substraction 
+  Err=sqrt(ErrInt*ErrInt+ErrBg*ErrBg);
   return integral;
 }
 
-Int_t Histogram_constructed::Background(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d) const
+Int_t Histogram_constructed::Background(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d, Double_t & Err) const
 {
   Int_t background;
   Int_t edge(0);
@@ -77,6 +80,7 @@ Int_t Histogram_constructed::Background(Int_t detector, Int_t bin, Int_t nb_bin,
     {
       edge=edge+histo[detector]->GetBinContent(bin_max+j+1);
     }
+  Err=sqrt(edge)*nb_bin/(bin_d-bin_g+1-nb_bin);
   background=edge*nb_bin/(bin_d-bin_g+1-nb_bin);
   return background;
 }
@@ -178,8 +182,9 @@ vector<vector<Double_t> > Histogram_constructed::CalibInv() const
 
 void Histogram_constructed::temp1(const Histogram_constructed &warm, Int_t nbfileWarm, Double_t &temp, Double_t &Errtemp) const
 {
-  Double_t WW=(((double)this->Integrate(0,1400,17,1390,1427)+(double)this->Integrate(2,1341,13,1331,1364))/((double)this->Integrate(1,1381,10,1371,1401)+(double)this->Integrate(3,1393,10,1383,1413)))*(((double)warm.Integrate(1,1381,10,1371,1401)+(double)warm.Integrate(3,1393,10,1383,1413))/((double)warm.Integrate(0,1400,17,1390,1427)+(double)warm.Integrate(2,1341,13,1331,1364)));
-  Double_t ErrWW=sqrt(WW*WW*(1./((double)this->Integrate(0,1400,17,1390,1427)+(double)this->Integrate(2,1341,13,1331,1364))+1./nbfileWarm/((double)warm.Integrate(1,1381,10,1371,1401)+(double)warm.Integrate(3,1393,10,1383,1413))+1./((double)this->Integrate(1,1381,10,1371,1401)+(double)this->Integrate(3,1393,10,1383,1413))+1./nbfileWarm/((double)warm.Integrate(0,1400,17,1390,1427)+(double)warm.Integrate(2,1341,13,1331,1364))));
+  Double_t Err;
+  Double_t WW=(((double)this->Integrate(0,1400,17,1390,1427,Err)+(double)this->Integrate(2,1341,13,1331,1364,Err))/((double)this->Integrate(1,1381,10,1371,1401,Err)+(double)this->Integrate(3,1393,10,1383,1413,Err)))*(((double)warm.Integrate(1,1381,10,1371,1401,Err)+(double)warm.Integrate(3,1393,10,1383,1413,Err))/((double)warm.Integrate(0,1400,17,1390,1427,Err)+(double)warm.Integrate(2,1341,13,1331,1364,Err)));
+  Double_t ErrWW=sqrt(WW*WW*(1./((double)this->Integrate(0,1400,17,1390,1427,Err)+(double)this->Integrate(2,1341,13,1331,1364,Err))+1./nbfileWarm/((double)warm.Integrate(1,1381,10,1371,1401,Err)+(double)warm.Integrate(3,1393,10,1383,1413,Err))+1./((double)this->Integrate(1,1381,10,1371,1401,Err)+(double)this->Integrate(3,1393,10,1383,1413,Err))+1./nbfileWarm/((double)warm.Integrate(0,1400,17,1390,1427,Err)+(double)warm.Integrate(2,1341,13,1331,1364,Err))));
   double As = TMath::Abs((WW-1.)*100.);
   double ErrAs=ErrWW*100.;
   temp=exp(4.59648-0.481448*log(As)-0.0868518*log(As)*log(As)+0.102367*log(As)*log(As)*log(As)-0.0591571*log(As)*log(As)*log(As)*log(As)+0.0154936*log(As)*log(As)*log(As)*log(As)*log(As)-0.00158925*log(As)*log(As)*log(As)*log(As)*log(As)*log(As));
@@ -188,8 +193,9 @@ void Histogram_constructed::temp1(const Histogram_constructed &warm, Int_t nbfil
 
 void Histogram_constructed::temp2(const Histogram_constructed &warm, Int_t nbfileWarm, Double_t &temp, Double_t &Errtemp) const
 {
-  Double_t WW=(((double)this->Integrate(0,1591,17,1581,1618)+(double)this->Integrate(2,1521,15,1511,1546))/((double)this->Integrate(1,1567,11,1557,1588)+(double)this->Integrate(3,1582,10,1572,1602)))*(((double)warm.Integrate(1,1567,11,1557,1588)+(double)warm.Integrate(3,1582,10,1572,1602))/((double)warm.Integrate(0,1591,17,1581,1618)+(double)warm.Integrate(2,1521,15,1511,1546)));
-  Double_t ErrWW=sqrt(WW*WW*(1./((double)this->Integrate(0,1591,17,1581,1618)+(double)this->Integrate(2,1521,15,1511,1546))+1./nbfileWarm/((double)warm.Integrate(1,1567,11,1557,1588)+(double)warm.Integrate(3,1582,10,1572,1602))+1./((double)this->Integrate(1,1567,11,1557,1588)+(double)this->Integrate(3,1582,10,1572,1602))+1./nbfileWarm/((double)warm.Integrate(0,1591,17,1581,1618)+(double)warm.Integrate(2,1521,15,1511,1546))));
+  Double_t Err;
+  Double_t WW=(((double)this->Integrate(0,1591,17,1581,1618,Err)+(double)this->Integrate(2,1521,15,1511,1546,Err))/((double)this->Integrate(1,1567,11,1557,1588,Err)+(double)this->Integrate(3,1582,10,1572,1602,Err)))*(((double)warm.Integrate(1,1567,11,1557,1588,Err)+(double)warm.Integrate(3,1582,10,1572,1602,Err))/((double)warm.Integrate(0,1591,17,1581,1618,Err)+(double)warm.Integrate(2,1521,15,1511,1546,Err)));
+  Double_t ErrWW=sqrt(WW*WW*(1./((double)this->Integrate(0,1591,17,1581,1618,Err)+(double)this->Integrate(2,1521,15,1511,1546,Err))+1./nbfileWarm/((double)warm.Integrate(1,1567,11,1557,1588,Err)+(double)warm.Integrate(3,1582,10,1572,1602,Err))+1./((double)this->Integrate(1,1567,11,1557,1588,Err)+(double)this->Integrate(3,1582,10,1572,1602,Err))+1./nbfileWarm/((double)warm.Integrate(0,1591,17,1581,1618,Err)+(double)warm.Integrate(2,1521,15,1511,1546,Err))));
 double As=TMath::Abs((WW-1.)*100.);
 double ErrAs=ErrWW*100.;
 temp=exp(4.59736-0.480986*log(TMath::Abs(As))-0.0879057*log(TMath::Abs(As))*log(TMath::Abs(As))+0.103411*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))-0.0596485*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))+0.0156033*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))-0.00159848*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As))*log(TMath::Abs(As)));

@@ -69,14 +69,14 @@ class Histogram_constructed
   /// \param bin nb_bin :the peak start at bin and is nb_bin wide 
   /// \param bin_g bin_d : the background is evaluated between bin_g and bin_d
   /// \return The background of bin contents 
-  Int_t Background(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d) const;
+  Int_t Background(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d, Double_t & Err) const;
 
   /// \brief Get integral of histograms
   /// \param detector : number of the detector
   /// \param bin nb_bin :the peak start at bin and is nb_bin wide 
   /// \param bin_g bin_d : the background is evaluated between bin_g and bin_d
   /// \return The sum of bin contents 
-  Int_t Integrate(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d) const;
+  Int_t Integrate(Int_t detector, Int_t bin, Int_t nb_bin, Int_t bin_g, Int_t bin_d, Double_t & Err) const;
 
   /// \brief Get the peak positions of histograms
   /// \return An array containing the peak positions for the four detectors

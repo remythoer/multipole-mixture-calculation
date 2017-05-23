@@ -30,7 +30,14 @@ class Histogram : public Histogram_constructed
   /// \brief Get the dead time for each detector
   /// \return a vector containing the dead times of each detectors
   vector<Double_t> Get_deadtime() const;
+  
+  /// \brief Get the relative activity compare to a first histogram, tau is the decay constant
+  /// \return The relative activity
+  Double_t Get_activity(const Histogram &hist, Double_t lambda) const;
 
+  /// \brief Compute the number of second from the 01/01/1970
+  /// /return this number
+  time_t Get_instant() const;
 };
 
 #endif

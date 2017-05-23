@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
   //Histogram warm("./ForRemy/RunForAnalysis/Warm_night_2015-04-21--62067");
   Histogram_constructed sum_warm ("./sum_warm");
   Histogram_constructed sum_cold ("./sum_cold");
+  Histogram first_cold ("./ForRemy/RunForAnalysis/RMN_MN_2015-04-22-185000-62101");
+  Histogram first_warm ("./ForRemy/RunForAnalysis/Warm_night_2015-04-21--61984");
+  Double_t lambda=1.03824729*pow(10,-7);
+  
+  
 
     struct dirent* openfile = NULL;
   DIR* dir = NULL;
@@ -49,7 +54,7 @@ int main(int argc, char *argv[])
 
 	      sum_warm += histo;
 	      	     
-	      for(Int_t j=0; j<4; j++){time1[j]=time1[j]+histo.Get_time()-histo.Get_deadtime()[j];} /// \brief deadtime of warm runs	      	      
+	      for(Int_t j=0; j<4; j++){time1[j]=time1[j]+(histo.Get_time()-histo.Get_deadtime()[j])*histo.Get_activity(first_warm,lambda);} /// \brief deadtime of warm runs	      	      
 	      cout<<name<<" "<<j1<<endl;
 	      cout<<"calibration detector 3 a="<<histo.Calibrate()[3][0]<<" b="<<histo.Calibrate()[3][1]<<" c="<<histo.Calibrate()[3][2]<<endl;
 	      j1++;
@@ -78,7 +83,7 @@ dir = opendir("./ForRemy/RunForAnalysis/Cold"); /// \brief open directory
 
 	      sum_cold+=histo;
 	      
-	      for(Int_t j=0; j<4; j++){time2[j]=time2[j]+histo.Get_time()-histo.Get_deadtime()[j];}/// \brief deadtime of cold runs	      	      
+	      for(Int_t j=0; j<4; j++){time2[j]=time2[j]+(histo.Get_time()-histo.Get_deadtime()[j])*histo.Get_activity(first_warm,lambda);}/// \brief deadtime of cold runs	      	      
 	      //histo.temp1(warm, 1, temp, Errtemp);
 	      cout<<name<<" "<<j2<<endl;
 	      cout<<"calibInv detector 3 a="<<histo.CalibInv()[3][0]<<" b="<<histo.CalibInv()[3][1]<<" c="<<histo.CalibInv()[3][2]<<endl;

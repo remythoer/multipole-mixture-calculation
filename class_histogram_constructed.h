@@ -8,6 +8,7 @@
 #include <math.h>
 #include <iomanip>
 #include <stdlib.h>
+#include <time.h>
 
 #include "TROOT.h"
 #include "TApplication.h"

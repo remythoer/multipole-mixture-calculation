@@ -115,8 +115,6 @@ time_t Histogram::Get_instant() const
   date.tm_sec=second;
   
   temps=mktime(&date);
-
-  cout<<year<<" "<<month<<" "<<day<<" "<<hour<<" "<<minute<<" "<<second<<endl;
     
   return temps;
 }

@@ -64,7 +64,7 @@ Double_t Histogram::Get_activity(const Histogram &hist, Double_t lambda) const
   time_t first=hist.Get_instant();
   time_t second=this->Get_instant();
   double delta_t=difftime(second, first);
-  
+ 
   return exp(-delta_t*lambda);  
 }
 
@@ -115,6 +115,6 @@ time_t Histogram::Get_instant() const
   date.tm_sec=second;
   
   temps=mktime(&date);
-    
+
   return temps;
 }

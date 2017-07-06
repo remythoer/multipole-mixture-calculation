@@ -35,7 +35,7 @@ class Histogram : public Histogram_constructed
   /// \return The relative activity
   Double_t Get_activity(const Histogram &hist, Double_t lambda) const;
 
-  /// \brief Compute the number of second from the 01/01/1970
+  /// \brief Compute the number of second from the 01/01/1970, thanks to time_t class
   /// /return this number
   time_t Get_instant() const;
 };

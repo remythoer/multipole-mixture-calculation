@@ -86,26 +86,26 @@ time_t Histogram::Get_instant() const
   for(Int_t i=0; i<47; i++){mpafile>>instant;}
   temp_instant=instant;
   temp_instant.Remove(2,8);
-  month=atof(temp_instant);
+  month=atof(temp_instant); /// \brief month
   temp_instant=instant;
   temp_instant.Remove(0,3);
   temp_instant.Remove(2,5);
-  day=atof(temp_instant);
+  day=atof(temp_instant); /// \brief day
   temp_instant=instant;
   temp_instant.Remove(0,6);
-  year=atof(temp_instant);
+  year=atof(temp_instant); /// \brief year
 
   mpafile>>instant;
   temp_instant=instant;
   temp_instant.Remove(2,6);
-  hour=atof(temp_instant);
+  hour=atof(temp_instant); /// \brief hour
   temp_instant=instant;
   temp_instant.Remove(0,3);
   temp_instant.Remove(2,3);
-  minute=atof(temp_instant);
+  minute=atof(temp_instant); /// \brief minute
   temp_instant=instant;
   temp_instant.Remove(0,6);
-  second=atof(temp_instant);
+  second=atof(temp_instant); /// \brief second
 
   date.tm_year=year-1900;
   date.tm_mon=month-1;
